@@ -1,8 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
 const app = express();
 
-const { quotes } = require('./data');
-const { getRandomElement } = require('./utils');
+import { quotes } from './data.js';
+import { getRandomElement, getQuoteById } from './utils.js';
 
 const PORT = process.env.PORT || 4001;
 
@@ -25,14 +27,44 @@ app.get('/api/quotes/random', (req, res, next) => {
 
 app.post('/api/quotes', (req, res, next) => {
   const data = req.query
-  console.log(data)
   if (data.quote && data.person) {
     const quote = {
+      id: uuidv4(),
       quote: data.quote,
       person: data.person
     }
     quotes.push(quote)
     res.status(201).send({ quote: quote })
+  } else {
+    res.status(400).send()
+  }
+})
+
+app.put('/api/quotes/:id', (req, res, next) => {
+
+  const { id } = req.params
+  const { quote, person } = req.query
+
+  if (id && quote && person) {
+
+    const [modifQuote] = getQuoteById(quotes, id)
+    if (Object.keys(modifQuote)) {
+      modifQuote.quote = quote
+      modifQuote.person = person
+      res.send(modifQuote)
+    } else {
+      res.status(404).send()
+    }
+  } else {
+    res.status(400).send()
+  }
+})
+
+app.delete('/api/quotes/:id', (req, res, next) => {
+  const { id } = req.params
+  if (id) {
+    const newQuotes = quotes.filter(quote => { return quote.id !== id })
+    res.send(newQuotes)
   } else {
     res.status(400).send()
   }

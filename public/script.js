@@ -23,7 +23,7 @@ const renderQuotes = (quotes = []) => {
       const newQuote = document.createElement('div');
       newQuote.className = 'single-quote';
       newQuote.innerHTML = `<div class="quote-text">${quote.quote}</div>
-      <div class="attribution">- ${quote.person}</div>`;
+      <div class="attribution">- ${quote.person}</div><small>${quote.id}</small>`;
       quoteContainer.appendChild(newQuote);
     });
   } else {
@@ -33,43 +33,43 @@ const renderQuotes = (quotes = []) => {
 
 fetchAllButton.addEventListener('click', () => {
   fetch('/api/quotes')
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      renderError(response);
-    }
-  })
-  .then(response => {
-    renderQuotes(response.quotes);
-  });
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        renderError(response);
+      }
+    })
+    .then(response => {
+      renderQuotes(response.quotes);
+    });
 });
 
 fetchRandomButton.addEventListener('click', () => {
   fetch('/api/quotes/random')
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      renderError(response);
-    }
-  })
-  .then(response => {
-    renderQuotes([response.quote]);
-  });
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        renderError(response);
+      }
+    })
+    .then(response => {
+      renderQuotes([response.quote]);
+    });
 });
 
 fetchByAuthorButton.addEventListener('click', () => {
   const author = document.getElementById('author').value;
   fetch(`/api/quotes?person=${author}`)
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      renderError(response);
-    }
-  })
-  .then(response => {
-    renderQuotes(response.quotes);
-  });
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        renderError(response);
+      }
+    })
+    .then(response => {
+      renderQuotes(response.quotes);
+    });
 });
